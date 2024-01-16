@@ -1,16 +1,13 @@
-FROM ubuntu:latest AS ubuntu
+FROM fedora AS ubuntu
 
 RUN apt-get update -y &&  \
     apt-get install openjdk-17-jdk -y && \
     apt-get install maven -y
 
-RUN mkdir -p /app
-
-COPY . /app
-
-WORKDIR /app
-
+COPY . .
 RUN mvn clean install
+
+
 FROM openjdk:17 AS java
 
 EXPOSE 8080

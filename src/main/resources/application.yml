@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${URL_DB}
-    username: ${USERNAME_DB}
-    password: ${PASSWORD_DB}
+    url: jdbc:postgresql://monorail.proxy.rlwy.net:54901/railway
+    username: postgres
+    password: 4g3--dCAC42fE4cAgDA2*b6A5eGCB-ca
   jpa:
     hibernate:
       ddl-auto: update
