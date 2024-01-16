@@ -20,7 +20,7 @@ RUN mdkir -p /app
 
 COPY --from:ubuntu /target/CRUD-0.0.1-SNAPSHOT.jar /app/
 
-ENTRYPOINT ["java", "-jar" , "/app/CRUD-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar" , "/app/CRUD/CRUD-0.0.1-SNAPSHOT.jar"]
 
 
 
