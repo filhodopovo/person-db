@@ -1,17 +1,16 @@
 package com.crud.crud.services;
 
-import com.crud.crud.entity.PersonModel;
-import com.crud.crud.exceptions.ResourceExistException;
-import com.crud.crud.exceptions.ResourceNotFoundException;
+import com.crud.crud.dtos.PersonRequestDto;
+import com.crud.crud.dtos.PersonResponseDto;
+import com.crud.crud.entities.Person;
+import com.crud.crud.exceptions.infra.PersonExistException;
+import com.crud.crud.exceptions.infra.PersonNotFoundException;
 import com.crud.crud.repositories.PersonRepository;
-import com.crud.crud.view.dto.PersonRequestDto;
-import com.crud.crud.view.dto.PersonResponseDto;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,43 +21,38 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public PersonResponseDto register(PersonRequestDto personRequestDto) {
-        if (personRequestDto.getEmail() == null) throw new NullPointerException();
-        PersonModel model = this.personRepository.findByEmail(personRequestDto.getEmail());
-        if (model != null) throw new ResourceExistException();
-        PersonModel personModel = modelMapper.map(personRequestDto, PersonModel.class);
-        personModel = this.personRepository.save(personModel);
-        return modelMapper.map(personModel, PersonResponseDto.class);
+        if (this.personRepository.findByEmail(personRequestDto.getEmail()) != null) throw new PersonExistException();
+        Person model = modelMapper.map(personRequestDto, Person.class);
+        return modelMapper.map(this.personRepository.save(model), PersonResponseDto.class);
     }
 
     @Override
     public List<PersonResponseDto> listAllPersons() {
-        List<PersonModel> personModels = this.personRepository.findAll();
-        return personModels.stream()
-                .map(e -> modelMapper.map(e, PersonResponseDto.class))
+        return this.personRepository.findAll().stream()
+                .map(PersonResponseDto::new)
                 .collect(Collectors.toList());
     }
 
     @Override
     public PersonResponseDto personById(Long id) {
-        Optional<PersonModel> personModelOptional = this.personRepository.findById(id);
-        return personModelOptional.map(e -> modelMapper.map(e, PersonResponseDto.class))
-                .orElseThrow(ResourceNotFoundException::new);
+        Person model = this.personRepository.findById(id).orElseThrow(PersonNotFoundException::new);
+        return modelMapper.map(model, PersonResponseDto.class);
     }
 
     @Override
     public PersonResponseDto updatePerson(Long id, PersonRequestDto person) {
-        Optional<PersonModel> model = this.personRepository.findById(id);
-        if (model.isEmpty()) throw new ResourceNotFoundException();
-
-        PersonModel personModel = model.get();
-        personModel.setterPersonModel(person);
-        personModel = this.personRepository.save(personModel);
-        return modelMapper.map(personModel, PersonResponseDto.class);
+        Person model = this.personRepository.findById(id).orElseThrow(PersonNotFoundException::new);
+        if (!person.getName().isEmpty()) model.setName(person.getName());
+        if (!person.getEmail().isEmpty()) model.setEmail(person.getEmail());
+        if (!person.getPassword().isEmpty()) model.setPassword(person.getPassword());
+        if (!person.getAddress().isEmpty()) model.setAddress(person.getAddress());
+        if (person.getIdade() != null) model.setIdade(person.getIdade());
+        return modelMapper.map(this.personRepository.save(model), PersonResponseDto.class);
     }
 
     @Override
     public void deleteById(Long id) {
-        Optional<PersonModel> model = this.personRepository.findById(id);
-        this.personRepository.deleteById(model.orElseThrow(ResourceNotFoundException::new).getId());
+        Person model = this.personRepository.findById(id).orElseThrow(PersonNotFoundException::new);
+        this.personRepository.delete(model);
     }
 }

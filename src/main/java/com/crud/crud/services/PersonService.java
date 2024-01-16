@@ -1,7 +1,7 @@
 package com.crud.crud.services;
 
-import com.crud.crud.view.dto.PersonRequestDto;
-import com.crud.crud.view.dto.PersonResponseDto;
+import com.crud.crud.dtos.PersonRequestDto;
+import com.crud.crud.dtos.PersonResponseDto;
 
 import java.util.List;
 

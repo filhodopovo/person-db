@@ -1,7 +1,7 @@
 package com.crud.crud.controllers;
 
-import com.crud.crud.view.dto.PersonRequestDto;
-import com.crud.crud.view.dto.PersonResponseDto;
+import com.crud.crud.dtos.PersonRequestDto;
+import com.crud.crud.dtos.PersonResponseDto;
 import com.crud.crud.services.PersonService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -33,13 +33,13 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PersonResponseDto> updatePerson(@PathVariable("id") @Valid Long id, @RequestBody @Valid PersonRequestDto person) {
+    public ResponseEntity<PersonResponseDto> updatePerson(@PathVariable("id") Long id, @RequestBody PersonRequestDto person) {
         return new ResponseEntity<>(this.personService.updatePerson(id, person), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteById(@PathVariable("id") @Valid Long id) {
         this.personService.deleteById(id);
-        return new ResponseEntity<>("Person delete", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
