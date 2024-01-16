@@ -1,18 +1,20 @@
 FROM ubuntu:latest AS ubuntu
 
 RUN apt-get update -y && \
-    apt-get install openjdk-17-jdk -y
+    apt-get install openjdk-17-jdk maven -y
+
+WORKDIR /CRUD
 
 COPY . .
 
-RUN apt-get install maven -y
-RUN mvn clean install
+RUN cd CRUD && \
+    mvn clean install
 
-FROM openjdk AS java
+FROM openjdk:17 AS java
 
 EXPOSE 8080
 
-RUN mkdir -p /app
+WORKDIR /app
 
 COPY --from=ubuntu /app/CRUD/target/CRUD-0.0.1-SNAPSHOT.jar /app/
 
