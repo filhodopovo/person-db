@@ -4,12 +4,13 @@ RUN apt-get update -y &&  \
     apt-get install openjdk-17-jdk -y && \
     apt-get install maven -y
 
-COPY . .
+RUN mkdir -p /app
 
-RUN echo "Current directory: $(pwd)" && ls -al
-RUN mvn clean install -X
-RUN echo "Contents after Maven build: $(pwd)" && ls -al
+COPY . /app
 
+WORKDIR /app
+
+RUN mvn clean install
 FROM openjdk:17 AS java
 
 EXPOSE 8080
