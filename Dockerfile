@@ -3,14 +3,10 @@ FROM ubuntu:latest AS ubuntu
 RUN apt-get update -y && \
     apt-get install openjdk-17-jdk -y
 
-RUN mkdir -p /app
-
-COPY . /app
+COPY . .
 
 RUN apt-get install maven -y
-
-RUN cd /app/CRUD && \
-    mvn clean install
+RUN mvn clean install
 
 FROM openjdk AS java
 
