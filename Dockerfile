@@ -1,7 +1,7 @@
 FROM ubuntu:latest AS ubuntu
 
 RUN apt-get update -y &&  \
-    apt-get install openjdk-17-jdk && \
+    apt-get install openjdk-17-jdk -y && \
     apt-get install maven -y
 
 COPY . .
