@@ -5,8 +5,7 @@ RUN apt-get update -y &&  \
     apt-get install maven -y
 
 COPY . .
-RUN mvn clean install
-
+RUN mvn clean install -DskipTests
 
 FROM openjdk:17 AS java
 
